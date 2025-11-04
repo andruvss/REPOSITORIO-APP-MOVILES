@@ -20,6 +20,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pasteles_de_milsabores.viewmodel.LoginViewModel
 import androidx.compose.material3.Button
 import androidx.compose.runtime.getValue
+import com.example.pasteles_de_milsabores.ui.components.AnimatedLoginButton
+
 
 
 @Composable
@@ -58,9 +60,11 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { viewModel.login() }, modifier = Modifier.fillMaxWidth()) {
-            Text("Ingresar")
-        }
+        AnimatedLoginButton(
+            text = "Ingresar",
+            onClick = { viewModel.login() }
+        )
+
 
         Spacer(modifier = Modifier.height(12.dp))
 
