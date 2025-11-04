@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.pasteles_de_milsabores.ui.screen.LoginScreen
+import com.example.pasteles_de_milsabores.ui.screen.RegistroScreen
 import com.example.pasteles_de_milsabores.ui.theme.Pasteles_de_MilSaboresTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,12 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Pasteles_de_MilSaboresTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                LoginScreen()
             }
         }
     }
@@ -44,4 +41,16 @@ fun GreetingPreview() {
     Pasteles_de_MilSaboresTheme {
         Greeting("Android")
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewLoginScreen() {
+    LoginScreen()
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewRegistroScreen() {
+    RegistroScreen()
 }
