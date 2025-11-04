@@ -1,5 +1,6 @@
 package com.example.pasteles_de_milsabores.ui.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,9 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pasteles_de_milsabores.R
 
 @Composable
 fun BienvenidaScreen(onIrAInicioSesion: () -> Unit, onIrARegistro: () -> Unit) {
@@ -30,6 +33,12 @@ fun BienvenidaScreen(onIrAInicioSesion: () -> Unit, onIrARegistro: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // 🧁 LOGO DE LA PASTELERÍA
+            Image(
+                painter = painterResource(id = R.drawable.logoprincipal),
+                contentDescription = "Logo Pastelería",
+                modifier = Modifier.height(120.dp)
+            )
             Text(
                 text = "¡Bienvenido a Pasteles de Mil Sabores!",
                 fontSize = 26.sp,

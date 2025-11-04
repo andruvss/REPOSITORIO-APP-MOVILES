@@ -1,4 +1,10 @@
 package com.example.pasteles_de_milsabores.data
 
-abstract class ProductoDatabase {
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.example.pasteles_de_milsabores.model.Producto
+
+@Database(entities = [Producto::class], version = 1)
+abstract class ProductoDatabase : RoomDatabase() {
+    abstract fun productoDao(): ProductoDao
 }
