@@ -54,3 +54,5 @@ fun PreviewLoginScreen() {
 fun PreviewRegistroScreen() {
     RegistroScreen()
 }
+
+
