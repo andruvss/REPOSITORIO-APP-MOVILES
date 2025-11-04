@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.pasteles_de_milsabores.navigation.AppNavigation
 import com.example.pasteles_de_milsabores.ui.screen.BienvenidaScreen
 import com.example.pasteles_de_milsabores.ui.screen.CatalogoScreen
 import com.example.pasteles_de_milsabores.ui.screen.LoginScreen
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Pasteles_De_MilSaboresTheme {
-                LoginScreen()
+                AppNavigation()
             }
         }
     }

@@ -8,8 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pasteles_de_milsabores.ui.screen.BienvenidaScreen
+import com.example.pasteles_de_milsabores.ui.screen.CatalogoScreen
 import com.example.pasteles_de_milsabores.ui.screen.LoginScreen
 import com.example.pasteles_de_milsabores.ui.screen.RegistroScreen
+import com.example.pasteles_de_milsabores.viewmodel.CatalogoViewModel
 import com.example.pasteles_de_milsabores.viewmodel.FormularioViewModel
 import com.example.pasteles_de_milsabores.viewmodel.LoginViewModel
 
@@ -48,6 +50,10 @@ fun AppNavigation() {
                     }
                 }
             )
+        }
+        composable("catalogo") {
+            val catalogoViewModel: CatalogoViewModel = viewModel()
+            CatalogoScreen(viewModel = catalogoViewModel)
         }
     }
 }
