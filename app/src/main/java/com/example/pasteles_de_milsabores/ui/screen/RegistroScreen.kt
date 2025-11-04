@@ -22,7 +22,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pasteles_de_milsabores.viewmodel.RegistroViewModel
 
 @Composable
-fun RegistroScreen(viewModel: RegistroViewModel = viewModel()) {
+fun RegistroScreen(
+    viewModel: RegistroViewModel = viewModel(),
+    onRegistroExitoso: () -> Unit = {}
+) {
     val state by viewModel.uiState.collectAsState()
 
     Column(
@@ -76,7 +79,16 @@ fun RegistroScreen(viewModel: RegistroViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { viewModel.registrarUsuario() }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = {
+            viewModel.registrarUsuario()
+            if (viewModel.uiState.value.registroExitoso) {
+                // si se registró correctamente, ejecutamos el callback
+                onRegistroExitoso()
+            }
+                      },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Registrarse")
         }
 
