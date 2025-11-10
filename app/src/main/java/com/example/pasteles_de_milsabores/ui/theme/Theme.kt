@@ -5,14 +5,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
 private val LightColors = lightColorScheme(
-    primary = RosaMedio,         // botones, accents
-    onPrimary = BlancoHueso,
-    secondary = RosaPastel,      // bordes, highlights
-    onSecondary = MarronSuave,
-    background = Crema,          // fondo de pantallas
-    surface = BlancoHueso,       // cards / surfaces
-    onBackground = MarronSuave,
-    onSurface = MarronSuave,
+    primary = MarronSuave,              // Color principal (botones, títulos)
+    onPrimary = BlancoHueso,            // Texto sobre color principal
+    primaryContainer = Crema,           // Fondo principal
+    onPrimaryContainer = MarronSuave,   // Texto sobre fondo claro
+    secondary = MarronClaro,            // Detalles secundarios
+    onSecondary = TextoGris,
+    background = BlancoHueso,           // Fondo general
+    onBackground = MarronSuave,         // Texto general
+    surface = BlancoHueso,              // Fondo de tarjetas/superficies
+    onSurface = TextoGris               // Texto sobre superficies
 )
 
 @Composable
