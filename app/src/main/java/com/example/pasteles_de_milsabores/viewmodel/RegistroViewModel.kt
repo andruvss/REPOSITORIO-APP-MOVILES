@@ -38,6 +38,7 @@ class RegistroViewModel : ViewModel() {
                 _uiState.update { it.copy(errorMensaje = "Las contraseñas no coinciden.") }
             }
             else -> {
+
                 _uiState.update {
                     it.copy(
                         registroExitoso = true,

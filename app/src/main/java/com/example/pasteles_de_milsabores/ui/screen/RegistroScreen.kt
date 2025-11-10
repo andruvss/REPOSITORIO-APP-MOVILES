@@ -14,19 +14,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pasteles_de_milsabores.viewmodel.RegistroViewModel
+import com.example.pasteles_de_milsabores.viewmodel.UsuarioViewModel
 
 @Composable
 fun RegistroScreen(
-    viewModel: RegistroViewModel = viewModel(),
+    viewModel: UsuarioViewModel,
     onRegistroExitoso: () -> Unit = {}
 ) {
-    val state by viewModel.uiState.collectAsState()
+    var nombre by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") } // no lo usas en la BD, pero puede mostrarse
+    var contrasena by remember { mutableStateOf("") }
+    var confirmarContrasena by remember { mutableStateOf("") }
+    var errorMensaje by remember { mutableStateOf<String?>(null) }
+    var registroExitoso by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -40,8 +49,8 @@ fun RegistroScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = state.nombre,
-            onValueChange = { viewModel.onNombreChange(it) },
+            value = nombre,
+            onValueChange = { nombre = it },
             label = { Text("Nombre") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -49,8 +58,8 @@ fun RegistroScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = state.correo,
-            onValueChange = { viewModel.onCorreoChange(it) },
+            value = email,
+            onValueChange = { email = it },
             label = { Text("Correo electrónico") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -58,8 +67,8 @@ fun RegistroScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = state.contrasena,
-            onValueChange = { viewModel.onContrasenaChange(it) },
+            value = contrasena,
+            onValueChange = { contrasena = it },
             label = { Text("Contraseña") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
@@ -69,8 +78,8 @@ fun RegistroScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = state.confirmarContrasena,
-            onValueChange = { viewModel.onConfirmarContrasenaChange(it) },
+            value = confirmarContrasena,
+            onValueChange = { confirmarContrasena = it },
             label = { Text("Confirmar contraseña") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
@@ -81,9 +90,16 @@ fun RegistroScreen(
 
         Button(
             onClick = {
-            viewModel.registrarUsuario()
-            if (viewModel.uiState.value.registroExitoso) {
-                // si se registró correctamente, ejecutamos el callback
+                if (nombre.isBlank() || contrasena.isBlank()) {
+                errorMensaje = "Por favor, complete todos los campos."
+                registroExitoso = false
+            } else if (contrasena != confirmarContrasena) {
+                errorMensaje = "Las contraseñas no coinciden."
+                registroExitoso = false
+            } else {
+                viewModel.agregarUsuarios(nombre, contrasena)
+                errorMensaje = null
+                registroExitoso = true
                 onRegistroExitoso()
             }
                       },
@@ -94,11 +110,11 @@ fun RegistroScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        state.errorMensaje?.let {
+        errorMensaje?.let {
             Text(it, color = MaterialTheme.colorScheme.error)
         }
 
-        if (state.registroExitoso) {
+        if (registroExitoso) {
             Text("✅ Registro exitoso", color = MaterialTheme.colorScheme.primary)
         }
     }

@@ -3,10 +3,13 @@ package com.example.pasteles_de_milsabores.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.example.pasteles_de_milsabores.ui.screen.BienvenidaScreen
 import com.example.pasteles_de_milsabores.ui.screen.CatalogoScreen
 import com.example.pasteles_de_milsabores.ui.screen.LoginScreen
@@ -14,11 +17,24 @@ import com.example.pasteles_de_milsabores.ui.screen.RegistroScreen
 import com.example.pasteles_de_milsabores.viewmodel.CatalogoViewModel
 import com.example.pasteles_de_milsabores.viewmodel.FormularioViewModel
 import com.example.pasteles_de_milsabores.viewmodel.LoginViewModel
-
+import com.example.pasteles_de_milsabores.data.UsuarioDatabase
+import com.example.pasteles_de_milsabores.viewmodel.UsuarioViewModel
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val viewModel: FormularioViewModel = viewModel()
+    val context = LocalContext.current
+
+    val database = remember {
+        Room.databaseBuilder(
+            context,
+            UsuarioDatabase::class.java,
+            "usuario.db"
+        ).build()
+    }
+
+    val usuarioViewModel = remember {
+        UsuarioViewModel(database.usuarioDao())
+    }
 
     NavHost(navController = navController, startDestination = "bienvenida") {
         composable("bienvenida") {
@@ -29,13 +45,13 @@ fun AppNavigation() {
         }
 
         composable("login") {
-            val loginViewModel: LoginViewModel = viewModel()
+            val loginViewModel = remember {
+                LoginViewModel(database.usuarioDao())
+            }
             val state by loginViewModel.uiState.collectAsState()
 
-            // Pasamos el ViewModel al LoginScreen
             LoginScreen(viewModel = loginViewModel)
 
-            // Si el usuario se logeó, navega automáticamente al catálogo
             if (state.estalogeado) {
                 navController.navigate("catalogo") {
                     popUpTo("login") { inclusive = true }
@@ -44,6 +60,7 @@ fun AppNavigation() {
         }
         composable("registro") {
             RegistroScreen(
+                viewModel = usuarioViewModel,
                 onRegistroExitoso = {
                     navController.navigate("login") {
                         popUpTo("registro") { inclusive = true } // vuelve al login

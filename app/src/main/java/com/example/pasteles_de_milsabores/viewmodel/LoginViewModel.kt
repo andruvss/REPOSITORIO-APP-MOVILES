@@ -1,14 +1,17 @@
 package com.example.pasteles_de_milsabores.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.room.util.copy
+import com.example.pasteles_de_milsabores.data.UsuarioDao
 import com.example.pasteles_de_milsabores.model.LoginUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(private val usuarioDao: UsuarioDao) : ViewModel() {
 
 private val _uiState = MutableStateFlow(LoginUiState())
 val uiState: StateFlow<LoginUiState> = _uiState
@@ -24,27 +27,30 @@ fun onContrasenaChange(newContrasena: String) {
 fun login() {
     val email = _uiState.value.email.trim()
     val password = _uiState.value.contrasena
-    val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$")
 
-    when {
-        email.isEmpty() || password.isEmpty() -> {
-            _uiState.update { it.copy(errorMensaje = "Debe ingresar correo y contraseña") }
-        }
+    viewModelScope.launch {
+        when {
+            email.isEmpty() || password.isEmpty() -> {
+                _uiState.update { it.copy(errorMensaje = "Debe ingresar correo y contraseña") }
+            }
 
-        !emailRegex.matches(email) -> {
-            _uiState.update { it.copy(errorMensaje = "Formato de correo inválido") }
-        }
+            password.length < 4 -> {
+                _uiState.update { it.copy(errorMensaje = "La contraseña debe tener al menos 4 caracteres") }
+            }
 
-        password.length < 4 -> {
-            _uiState.update { it.copy(errorMensaje = "La contraseña debe tener al menos 4 caracteres") }
-        }
+            email.isEmpty() || password.isEmpty() -> {
+                _uiState.update { it.copy(estalogeado = true, errorMensaje = null) }
+            }
 
-        email == "admin@gmail.com" && password == "1234" -> {
-            _uiState.update { it.copy(estalogeado = true, errorMensaje = null) }
-        }
-
-        else -> {
-            _uiState.update { it.copy(errorMensaje = "Correo o contraseña incorrectos") }
+            else -> {
+                val usuario = usuarioDao.obtenerUsuarios()
+                    .find { it.nombre == email && it.contrasena == password }
+                if (usuario != null) {
+                    _uiState.update { it.copy(estalogeado = true, errorMensaje = null) }
+                } else {
+                    _uiState.update { it.copy(errorMensaje = "Correo o contraseña incorrectos") }
+                }
+            }
         }
     }
 }
