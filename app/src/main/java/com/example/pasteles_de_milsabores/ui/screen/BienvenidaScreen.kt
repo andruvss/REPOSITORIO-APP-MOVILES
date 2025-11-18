@@ -14,11 +14,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pasteles_de_milsabores.R
+import com.example.pasteles_de_milsabores.ui.theme.MarronSuave
 
 @Composable
 fun BienvenidaScreen(onIrAInicioSesion: () -> Unit, onIrARegistro: () -> Unit) {
@@ -34,16 +36,29 @@ fun BienvenidaScreen(onIrAInicioSesion: () -> Unit, onIrARegistro: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // 🧁 LOGO DE LA PASTELERÍA
-            Image(
-                painter = painterResource(id = R.drawable.logoprincipal),
-                contentDescription = "Logo Pastelería",
-                modifier = Modifier.height(120.dp)
-            )
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                shadowElevation = 8.dp,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(bottom = 24.dp)
+                    .height(160.dp)
+                    .padding(16.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logoprincipal),
+                    contentDescription = "Logo Pastelería",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
             Text(
                 text = "¡Bienvenido a Pasteles de Mil Sabores!",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MarronSuave,
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -51,7 +66,7 @@ fun BienvenidaScreen(onIrAInicioSesion: () -> Unit, onIrARegistro: () -> Unit) {
             Text(
                 text = "Descubre nuestros deliciosos sabores y personaliza tu pedido.",
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MarronSuave
             )
 
             Spacer(modifier = Modifier.height(48.dp))

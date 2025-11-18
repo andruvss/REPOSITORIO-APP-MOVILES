@@ -18,6 +18,8 @@ import com.example.pasteles_de_milsabores.viewmodel.CatalogoViewModel
 import com.example.pasteles_de_milsabores.viewmodel.FormularioViewModel
 import com.example.pasteles_de_milsabores.viewmodel.LoginViewModel
 import com.example.pasteles_de_milsabores.data.UsuarioDatabase
+import com.example.pasteles_de_milsabores.ui.screens.PostScreen
+import com.example.pasteles_de_milsabores.viewmodel.PostViewModel
 import com.example.pasteles_de_milsabores.viewmodel.UsuarioViewModel
 @Composable
 fun AppNavigation() {
@@ -71,6 +73,11 @@ fun AppNavigation() {
         composable("catalogo") {
             val catalogoViewModel: CatalogoViewModel = viewModel()
             CatalogoScreen(viewModel = catalogoViewModel)
+        }
+
+        composable("post") {
+            val postViewModel : PostViewModel = viewModel()
+            PostScreen(viewModel = postViewModel)
         }
     }
 }
