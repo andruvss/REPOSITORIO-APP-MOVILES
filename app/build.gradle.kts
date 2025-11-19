@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.ui.test.junit4)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,10 +63,12 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    //dependencias de room
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
 
+    //dependencias para el consumo REST
     implementation("androidx.activity-compose:1.9.0")
     implementation("androidx.compose.material3:1.3.0")
     implementation("androidx.lifecylce:lifecycle-viewmodel-compose:2.7.0")
@@ -75,6 +78,26 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
+    //dependencias para testing
 
+    //kotest
+    testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
+    testImplementation("io.kotest:kotest-assertions-core:5.8.0")
+
+    //JUnit 5
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+
+    //MockK
+    testImplementation("io.mockk:mockk:1.13.10")
+
+    //Compose UI test
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
+
+    //para usar JUnit 5
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
+    }
+    testImplementation(kotlin("test"))
 
 }
