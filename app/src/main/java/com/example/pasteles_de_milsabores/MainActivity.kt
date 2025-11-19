@@ -4,18 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.pasteles_de_milsabores.navigation.AppNavigation
 import com.example.pasteles_de_milsabores.ui.screen.BienvenidaScreen
-import com.example.pasteles_de_milsabores.ui.screen.CatalogoScreen
-import com.example.pasteles_de_milsabores.ui.screen.LoginScreen
-import com.example.pasteles_de_milsabores.ui.screen.RegistroScreen
+import com.example.pasteles_de_milsabores.ui.screen.CatalogoAdminScreen
 import com.example.pasteles_de_milsabores.ui.theme.Pasteles_De_MilSaboresTheme
 import com.example.pasteles_de_milsabores.viewmodel.CatalogoViewModel
 
@@ -43,43 +45,46 @@ fun PreviewBienvenidaScreen() {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PreviewCatalogoScreen() {
-    // ViewModel falso para mostrar datos en el preview
-    val fakeViewModel = object : CatalogoViewModel() {
-        init {
-            _productos.value = listOf(
-                Producto(1, "Torta de Chocolate", 15000, "Torta rica"),
-                Producto(2, "Cheesecake Frutilla", 18000, "Delicioso"),
-                Producto(3, "Pie de Limón", 12000, "Clásico favorito")
-            )
-        }
-    }
-
-    CatalogoScreen(viewModel = fakeViewModel)
+fun PreviewCatalogoAdminScreen() {
+    CatalogoAdminScreenPreview()
 }
 
-// ---- ViewModel falso para el Preview ----
-class FakeUsuarioViewModel : UsuarioViewModel(usuarioDao = FakeUsuarioDao())
-
-class FakeUsuarioDao : com.example.pasteles_de_milsabores.data.UsuarioDao {
-    private val lista = mutableListOf<Usuario>()
-
-    override suspend fun insertar(usuario: Usuario) {
-        lista.add(usuario)
-    }
-
-    override suspend fun obtenerUsuarios(): List<Usuario> {
-        return lista
-    }
-}
-
-// ---- PREVIEW ----
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun RegistroScreenPreview() {
-    RegistroScreen(
-        viewModel = FakeUsuarioViewModel(),
-        onRegistroExitoso = {}
-    )
-}
+fun CatalogoAdminScreenPreview() {
 
+    Column(modifier = Modifier.padding(16.dp)) {
+
+        OutlinedTextField(
+            value = "Torta de Chocolate",
+            onValueChange = {},
+            label = { Text("Nombre del producto") }
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = "Una torta muy rica",
+            onValueChange = {},
+            label = { Text("Descripción") }
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = "15000",
+            onValueChange = {},
+            label = { Text("Precio") }
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        Button(onClick = {}) {
+            Text("Agregar producto")
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        Text("Torta de Chocolate - Torta rica - \$15000")
+        Text("Pie de Limón - Clásico - \$12000")
+    }
+}

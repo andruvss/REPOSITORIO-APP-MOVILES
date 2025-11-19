@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.pasteles_de_milsabores.viewmodel.CatalogoViewModel
 
 @Composable
-fun CatalogoScreen(viewModel: CatalogoViewModel) {
+fun CatalogoAdminScreen(viewModel: CatalogoViewModel) {
     var nombre by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }

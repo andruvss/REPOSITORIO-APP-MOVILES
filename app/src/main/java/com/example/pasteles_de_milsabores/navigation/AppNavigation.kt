@@ -11,13 +11,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.pasteles_de_milsabores.ui.screen.BienvenidaScreen
-import com.example.pasteles_de_milsabores.ui.screen.CatalogoScreen
 import com.example.pasteles_de_milsabores.ui.screen.LoginScreen
 import com.example.pasteles_de_milsabores.ui.screen.RegistroScreen
 import com.example.pasteles_de_milsabores.viewmodel.CatalogoViewModel
 import com.example.pasteles_de_milsabores.viewmodel.FormularioViewModel
 import com.example.pasteles_de_milsabores.viewmodel.LoginViewModel
 import com.example.pasteles_de_milsabores.data.UsuarioDatabase
+import com.example.pasteles_de_milsabores.ui.screen.CatalogoAdminScreen
 import com.example.pasteles_de_milsabores.ui.screens.PostScreen
 import com.example.pasteles_de_milsabores.viewmodel.PostViewModel
 import com.example.pasteles_de_milsabores.viewmodel.UsuarioViewModel
@@ -55,7 +55,10 @@ fun AppNavigation() {
             LoginScreen(viewModel = loginViewModel)
 
             if (state.estalogeado) {
-                navController.navigate("catalogo") {
+                // según sea admin o cliente
+                val destino = if (state.esAdmin) "catalogo_admin" else "catalogo_cliente"
+
+                navController.navigate(destino) {
                     popUpTo("login") { inclusive = true }
                 }
             }
@@ -70,9 +73,19 @@ fun AppNavigation() {
                 }
             )
         }
-        composable("catalogo") {
-            val catalogoViewModel: CatalogoViewModel = viewModel()
-            CatalogoScreen(viewModel = catalogoViewModel)
+
+        composable("catalogo_cliente") {
+            val catalogoViewModel = remember {
+                CatalogoViewModel(database.productoDao())
+            }
+            CatalogoClienteScreen(viewModel = catalogoViewModel)
+        }
+
+        composable("catalogo_admin") {
+            val catalogoViewModel = remember {
+                CatalogoViewModel(database.productoDao())
+            }
+            CatalogoAdminScreen(viewModel = catalogoViewModel)
         }
 
         composable("post") {
