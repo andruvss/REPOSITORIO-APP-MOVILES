@@ -35,5 +35,4 @@ open class PostViewModel : ViewModel() {
         }
     }
 
-    open val PostList: MutableStateFlow<List<Post>> = MutableStateFlow(fakePosts)
 }

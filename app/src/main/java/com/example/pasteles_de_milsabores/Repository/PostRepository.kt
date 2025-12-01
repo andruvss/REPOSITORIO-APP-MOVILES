@@ -10,4 +10,12 @@ open class PostRepository {
         return RetrofitInstance.api.getPosts()
     }
 
+    open suspend fun updatePost(id: Int, post: Post): Post {
+        return RetrofitInstance.api.updatePost(id, post)
+    }
+
+    open suspend fun deletePost(id: Int) {
+        RetrofitInstance.api.deletePost(id)
+    }
+
 }
