@@ -29,29 +29,24 @@ fun login() {
     val password = _uiState.value.contrasena
 
     viewModelScope.launch {
-        when {
-            email.isEmpty() || password.isEmpty() -> {
-                _uiState.update { it.copy(errorMensaje = "Debe ingresar correo y contraseña") }
-            }
 
-            password.length < 4 -> {
-                _uiState.update { it.copy(errorMensaje = "La contraseña debe tener al menos 4 caracteres") }
-            }
-
-            email.isEmpty() || password.isEmpty() -> {
-                _uiState.update { it.copy(estalogeado = true, errorMensaje = null) }
-            }
-
-            else -> {
-                val usuario = usuarioDao.obtenerUsuarios()
-                    .find { it.nombre == email && it.contrasena == password }
-                if (usuario != null) {
-                    _uiState.update { it.copy(estalogeado = true, errorMensaje = null) }
-                } else {
-                    _uiState.update { it.copy(errorMensaje = "Correo o contraseña incorrectos") }
-                }
-            }
+        if (email.isEmpty() || password.isEmpty()) {
+            _uiState.update { it.copy(errorMensaje = "Debe ingresar correo y contraseña") }
         }
+
+        if (password.length < 4) {
+            _uiState.update { it.copy(errorMensaje = "La contraseña debe tener al menos 4 caracteres") }
+        }
+
+
+        val usuario = usuarioDao.obtenerUsuarios()
+            .find { it.email == email && it.contrasena == password }
+        if (usuario != null) {
+            _uiState.update { it.copy(estalogeado = true, esAdmin = usuario.rol == "admin", errorMensaje = null) }
+        } else {
+            _uiState.update { it.copy(errorMensaje = "Correo o contraseña incorrectos") }
+        }
+
     }
 }
 

@@ -1,6 +1,7 @@
 package com.example.pasteles_de_milsabores.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -17,7 +18,9 @@ import com.example.pasteles_de_milsabores.viewmodel.CatalogoViewModel
 import com.example.pasteles_de_milsabores.viewmodel.FormularioViewModel
 import com.example.pasteles_de_milsabores.viewmodel.LoginViewModel
 import com.example.pasteles_de_milsabores.data.UsuarioDatabase
+import com.example.pasteles_de_milsabores.data.ProductoDatabase
 import com.example.pasteles_de_milsabores.ui.screen.CatalogoAdminScreen
+import com.example.pasteles_de_milsabores.ui.screen.CatalogoClienteScreen
 import com.example.pasteles_de_milsabores.ui.screens.PostScreen
 import com.example.pasteles_de_milsabores.viewmodel.PostViewModel
 import com.example.pasteles_de_milsabores.viewmodel.UsuarioViewModel
@@ -26,7 +29,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
-    val database = remember {
+    val databaseUsuario = remember {
         Room.databaseBuilder(
             context,
             UsuarioDatabase::class.java,
@@ -34,8 +37,20 @@ fun AppNavigation() {
         ).build()
     }
 
+    val databaseProducto = remember {
+        Room.databaseBuilder(
+            context,
+            ProductoDatabase::class.java,
+            "producto.db"
+        ).build()
+    }
+
     val usuarioViewModel = remember {
-        UsuarioViewModel(database.usuarioDao())
+        UsuarioViewModel(databaseUsuario.usuarioDao())
+    }
+
+    val catalogoViewModel = remember {
+        CatalogoViewModel(databaseProducto.productoDao())
     }
 
     NavHost(navController = navController, startDestination = "bienvenida") {
@@ -48,18 +63,18 @@ fun AppNavigation() {
 
         composable("login") {
             val loginViewModel = remember {
-                LoginViewModel(database.usuarioDao())
+                LoginViewModel(databaseUsuario.usuarioDao())
             }
             val state by loginViewModel.uiState.collectAsState()
 
             LoginScreen(viewModel = loginViewModel)
 
-            if (state.estalogeado) {
-                // según sea admin o cliente
-                val destino = if (state.esAdmin) "catalogo_admin" else "catalogo_cliente"
-
-                navController.navigate(destino) {
-                    popUpTo("login") { inclusive = true }
+            LaunchedEffect(state.estalogeado) {
+                if (state.estalogeado) {
+                    val destino = if (state.esAdmin) "catalogo_admin" else "catalogo_cliente"
+                    navController.navigate(destino) {
+                        popUpTo("login") { inclusive = true }
+                    }
                 }
             }
         }
@@ -75,18 +90,13 @@ fun AppNavigation() {
         }
 
         composable("catalogo_cliente") {
-            val catalogoViewModel = remember {
-                CatalogoViewModel(database.productoDao())
-            }
             CatalogoClienteScreen(viewModel = catalogoViewModel)
         }
 
         composable("catalogo_admin") {
-            val catalogoViewModel = remember {
-                CatalogoViewModel(database.productoDao())
-            }
             CatalogoAdminScreen(viewModel = catalogoViewModel)
         }
+
 
         composable("post") {
             val postViewModel : PostViewModel = viewModel()
