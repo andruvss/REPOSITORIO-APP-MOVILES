@@ -54,6 +54,12 @@ fun AppNavigation() {
     val catalogoViewModel = remember {
         CatalogoViewModel(databaseProducto.productoDao())
     }
+    // --- LÓGICA AGREGADA: CREAR ADMINISTRADOR DE PRUEBA UNA SOLA VEZ ---
+    LaunchedEffect(Unit) {
+        // Correo: admin@pasteles.cl | Contraseña: 12345
+        usuarioViewModel.crearAdminSiNoExiste("admin@pasteles.cl", "12345")
+    }
+    // ----------------------------------------------------------------------
 
     NavHost(navController = navController, startDestination = "bienvenida") {
         composable("bienvenida") {
@@ -73,6 +79,10 @@ fun AppNavigation() {
 
             LaunchedEffect(state.estalogeado) {
                 if (state.estalogeado) {
+
+                    // IMPORTANTE: Registrar el usuario actual en el ViewModel de Usuario
+                    usuarioViewModel.setUsuarioLogueado(state.email)
+
                     val destino = if (state.esAdmin) "catalogo_admin" else "catalogo_cliente"
                     navController.navigate(destino) {
                         popUpTo("login") { inclusive = true }

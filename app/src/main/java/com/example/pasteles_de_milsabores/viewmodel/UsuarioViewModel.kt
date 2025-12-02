@@ -44,7 +44,8 @@ class UsuarioViewModel (private val usuarioDao: UsuarioDao) : ViewModel(){
         val nuevoUsuario = Usuario(
             nombre = nombre,
             email = email,
-            contrasena = contrasena
+            contrasena = contrasena,
+            rol = "cliente"
         )
 
         viewModelScope.launch {
@@ -57,6 +58,22 @@ class UsuarioViewModel (private val usuarioDao: UsuarioDao) : ViewModel(){
     fun mostrarUsuarios(){
         viewModelScope.launch {
             _usuarios.value = usuarioDao.obtenerUsuarios()
+        }
+    }
+
+    // Función para crear un administrador si no existe (solo para fines de prueba)
+    fun crearAdminSiNoExiste(emailAdmin: String, contrasenaAdmin: String) {
+        viewModelScope.launch {
+            val adminExistente = usuarioDao.obtenerPorEmail(emailAdmin)
+            if (adminExistente == null) {
+                val adminUsuario = Usuario(
+                    nombre = "Admin Maestro",
+                    email = emailAdmin,
+                    contrasena = contrasenaAdmin,
+                    rol = "admin" // ROL DE ADMINISTRADOR
+                )
+                usuarioDao.insertar(adminUsuario)
+            }
         }
     }
 }

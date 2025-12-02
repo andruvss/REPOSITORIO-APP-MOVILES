@@ -51,9 +51,46 @@ class CatalogoViewModel(private val productoDao: ProductoDao) : ViewModel() {
         }
     }
 
+    // --- LA CLAVE PARA MOSTRAR PRODUCTOS: FUNCIÓN DE SEEDING ---
     fun mostrarProductos() {
         viewModelScope.launch {
+            // 1. Intentamos traer los productos
+            var lista = productoDao.obtenerProductos()
+
+            // 2. SI LA LISTA ESTÁ VACÍA -> CREAMOS DATOS FALSOS (SEEDING)
+            if (lista.isEmpty()) {
+                val pastel1 = Producto(nombre = "Torta Chocolate", precio = 15000.0, descripcion = "Torta triple de chocolate amargo, ideal para compartir.", imagenUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.directoalpaladar.com%2Fpostres%2Ftarta-facil-chocolate-receta-horno-lista-30-minutos&psig=AOvVaw3OwCff7himHGYHhLi38vaE&ust=1764762772442000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCKDa4OPrnpEDFQAAAAAdAAAAABAL")
+                val pastel2 = Producto(nombre = "Pie de Limón", precio = 12000.0, descripcion = "Clásico pie de limón con merengue suizo tostado.", imagenUrl = "https://www.recetasnestle.cl/sites/default/files/srh_recipes/49d627e69672b6915c22f2eb2dfd1b93.jpg")
+                val pastel3 = Producto(nombre = "Cheesecake Berries", precio = 18000.0, descripcion = "Cremoso cheesecake con coulis de frutos rojos de la temporada.", imagenUrl = "https://www.wengerhaus.cl/wp-content/uploads/2023/10/19WENGERHAUS-CUADRADAS.jpg")
+
+                productoDao.insertar(pastel1)
+                productoDao.insertar(pastel2)
+                productoDao.insertar(pastel3)
+
+                // Volvemos a cargar para que aparezcan ahora sí
+                lista = productoDao.obtenerProductos()
+            }
+
+            // 3. Actualizamos la pantalla
+            _productos.value = lista
+        }
+    }
+
+
+    fun actualizarProducto(producto: Producto) {
+        viewModelScope.launch {
+            productoDao.actualizar(producto)
+            // Después de actualizar, recargamos la lista para la UI
             _productos.value = productoDao.obtenerProductos()
         }
     }
+
+    fun eliminarProducto(producto: Producto) {
+        viewModelScope.launch {
+            productoDao.eliminar(producto)
+            // Después de eliminar, recargamos la lista para la UI
+            _productos.value = productoDao.obtenerProductos()
+        }
+    }
+
 }
