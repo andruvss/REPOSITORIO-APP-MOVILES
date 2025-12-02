@@ -4,5 +4,6 @@ data class LoginUiState(
     val email: String = "",
     val contrasena: String = "",
     val estalogeado: Boolean = false,
+    val esAdmin: Boolean = false,
     val errorMensaje: String? = null
 )

@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.pasteles_de_milsabores"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -70,6 +70,7 @@ dependencies {
 
     // Librerías estándar de Android
     implementation(libs.androidx.ui.test.junit4)
+    implementation(libs.androidx.compose.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
