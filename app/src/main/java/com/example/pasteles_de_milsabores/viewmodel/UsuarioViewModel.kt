@@ -13,11 +13,43 @@ class UsuarioViewModel (private val usuarioDao: UsuarioDao) : ViewModel(){
 
     val usuarios = _usuarios.asStateFlow()
 
-    fun agregarUsuarios(nombre:String, contrasena:String){
-        val nuevoUsuario = Usuario(nombre = nombre, contrasena=contrasena)
+    /////////////////////
+    // Usuario actualmente logueado
+    private val _usuarioActual = MutableStateFlow<Usuario?>(null)
+    val usuarioActual = _usuarioActual.asStateFlow()
+
+    // Función para "recordar" quién entró al hacer Login
+    fun setUsuarioLogueado(email: String) {
+        viewModelScope.launch {
+            val usuario = usuarioDao.obtenerPorEmail(email)
+            _usuarioActual.value = usuario
+        }
+    }
+
+    // Función para actualizar los datos desde el Perfil
+    fun actualizarPerfil(usuario: Usuario) {
+        viewModelScope.launch {
+            usuarioDao.actualizar(usuario)
+            _usuarioActual.value = usuario // Actualizamos la vista en vivo
+        }
+    }
+
+    ////////////////////
+
+    // --- CAMBIO REALIZADO AQUÍ ---
+    // Agregamos 'email: String' a los parámetros
+    fun agregarUsuarios(nombre: String, email: String, contrasena: String) {
+
+        // Agregamos 'email = email' al crear el objeto
+        val nuevoUsuario = Usuario(
+            nombre = nombre,
+            email = email,
+            contrasena = contrasena
+        )
 
         viewModelScope.launch {
             usuarioDao.insertar(nuevoUsuario)
+            // Actualizamos la lista local para ver los cambios de inmediato (opcional)
             _usuarios.value = usuarioDao.obtenerUsuarios()
         }
     }

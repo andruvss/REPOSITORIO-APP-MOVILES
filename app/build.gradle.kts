@@ -95,6 +95,9 @@ dependencies {
 
     // Soporte para Kotlin Test
     testImplementation(kotlin("test"))
+
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
 }
 
 // --- CONFIGURACIÓN DE JUNIT 5 (IMPORTANTE: Debe ir fuera de dependencies) ---

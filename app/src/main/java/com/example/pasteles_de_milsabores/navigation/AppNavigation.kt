@@ -19,8 +19,10 @@ import com.example.pasteles_de_milsabores.viewmodel.FormularioViewModel
 import com.example.pasteles_de_milsabores.viewmodel.LoginViewModel
 import com.example.pasteles_de_milsabores.data.UsuarioDatabase
 import com.example.pasteles_de_milsabores.data.ProductoDatabase
+import com.example.pasteles_de_milsabores.ui.screen.CarritoScreen
 import com.example.pasteles_de_milsabores.ui.screen.CatalogoAdminScreen
 import com.example.pasteles_de_milsabores.ui.screen.CatalogoClienteScreen
+import com.example.pasteles_de_milsabores.ui.screen.ProfileScreen
 import com.example.pasteles_de_milsabores.ui.screens.PostScreen
 import com.example.pasteles_de_milsabores.viewmodel.PostViewModel
 import com.example.pasteles_de_milsabores.viewmodel.UsuarioViewModel
@@ -90,7 +92,27 @@ fun AppNavigation() {
         }
 
         composable("catalogo_cliente") {
-            CatalogoClienteScreen(viewModel = catalogoViewModel)
+            CatalogoClienteScreen(
+                viewModel = catalogoViewModel,
+                navController = navController // <--- Agrega esto
+            )
+        }
+
+        // 1. Ruta del Perfil
+        composable("perfil") {
+            ProfileScreen(
+                navController = navController,
+                viewModel = usuarioViewModel // ¡IMPORTANTE! Pasamos el mismo VM
+            )
+        }
+
+        // En AppNavigation.kt, dentro del NavHost
+
+        composable("carrito") {
+            CarritoScreen(
+                navController = navController,
+                viewModel = catalogoViewModel // ¡IMPORTANTE! Usamos el mismo ViewModel
+            )
         }
 
         composable("catalogo_admin") {

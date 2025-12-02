@@ -12,7 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,8 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.pasteles_de_milsabores.viewmodel.RegistroViewModel
 import com.example.pasteles_de_milsabores.viewmodel.UsuarioViewModel
 
 @Composable
@@ -31,7 +28,7 @@ fun RegistroScreen(
     onRegistroExitoso: () -> Unit = {}
 ) {
     var nombre by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") } // no lo usas en la BD, pero puede mostrarse
+    var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
     var confirmarContrasena by remember { mutableStateOf("") }
     var errorMensaje by remember { mutableStateOf<String?>(null) }
@@ -90,19 +87,22 @@ fun RegistroScreen(
 
         Button(
             onClick = {
-                if (nombre.isBlank() || contrasena.isBlank()) {
-                errorMensaje = "Por favor, complete todos los campos."
-                registroExitoso = false
-            } else if (contrasena != confirmarContrasena) {
-                errorMensaje = "Las contraseñas no coinciden."
-                registroExitoso = false
-            } else {
-                viewModel.agregarUsuarios(nombre, contrasena)
-                errorMensaje = null
-                registroExitoso = true
-                onRegistroExitoso()
-            }
-                      },
+                // CAMBIO 1: Agregamos email.isBlank() a la validación
+                if (nombre.isBlank() || email.isBlank() || contrasena.isBlank()) {
+                    errorMensaje = "Por favor, complete todos los campos."
+                    registroExitoso = false
+                } else if (contrasena != confirmarContrasena) {
+                    errorMensaje = "Las contraseñas no coinciden."
+                    registroExitoso = false
+                } else {
+                    // CAMBIO 2 (EL MÁS IMPORTANTE): Enviamos el email al ViewModel
+                    viewModel.agregarUsuarios(nombre, email, contrasena)
+
+                    errorMensaje = null
+                    registroExitoso = true
+                    onRegistroExitoso()
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Registrarse")
@@ -118,8 +118,4 @@ fun RegistroScreen(
             Text("✅ Registro exitoso", color = MaterialTheme.colorScheme.primary)
         }
     }
-
-    
 }
-
-

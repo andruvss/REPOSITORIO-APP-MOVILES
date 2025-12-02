@@ -10,5 +10,11 @@ data class Usuario(
     val nombre: String,
     val email: String = "",
     val contrasena: String = "",
-    val rol: String =""
+    val rol: String ="",
+
+
+    //para el perfilUsuario
+    val rut: String = "",
+    val direccion: String = "",
+    val fotoPerfilUri: String? = null
 )

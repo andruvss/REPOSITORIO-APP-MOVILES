@@ -15,7 +15,7 @@ open class PostViewModel(
 ) : ViewModel() {
 
     // Flujo mutable que contiene la lista de posts (Estado privado)
-    private val _postList = MutableStateFlow<List<Post>>(emptyList())
+    protected val _postList = MutableStateFlow<List<Post>>(emptyList())
 
     // Flujo público de solo lectura para la UI
     open val postList: StateFlow<List<Post>> = _postList
