@@ -8,26 +8,28 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-//ViewModel que mantiene el estado de los datos obtenidos
-open class PostViewModel : ViewModel() {
+// CAMBIO CLAVE AQUÍ: Pasamos el repositorio por constructor con valor por defecto.
+// Esto nos permite pasar uno FALSO durante las pruebas.
+open class PostViewModel(
+    private val repository: PostRepository = PostRepository()
+) : ViewModel() {
 
-    private val repository = PostRepository()
-    //Flujo mutable que contiene la lista de posts
-
+    // Flujo mutable que contiene la lista de posts (Estado privado)
     private val _postList = MutableStateFlow<List<Post>>(emptyList())
-    //Flujo público de solo lectura
 
-    val postList: StateFlow<List<Post>> = _postList
+    // Flujo público de solo lectura para la UI
+    open val postList: StateFlow<List<Post>> = _postList
 
-    //Se llama automaticamente al iniciar
+    // Se llama automáticamente al iniciar para cargar los datos
     init {
         fetchPosts()
     }
 
-    //Funcion que obtiene los datos en segundo plano
+    // --- GET: Obtener datos ---
     open fun fetchPosts() {
         viewModelScope.launch {
             try {
+                // Obtenemos los datos de la API y actualizamos la lista
                 _postList.value = repository.getPosts()
             } catch (e: Exception) {
                 println("Error al obtener datos: ${e.localizedMessage}")
@@ -35,5 +37,54 @@ open class PostViewModel : ViewModel() {
         }
     }
 
-    open val PostList: MutableStateFlow<List<Post>> = MutableStateFlow(fakePosts)
+    // --- PUT: Actualizar dato ---
+    fun updatePost(post: Post) {
+        viewModelScope.launch {
+            try {
+                // 1. Llamamos a la API para actualizar en la nube
+                val postActualizado = repository.updatePost(post.id, post)
+
+                // 2. Actualizamos la lista localmente
+                _postList.value = _postList.value.map { existingPost ->
+                    if (existingPost.id == post.id) postActualizado else existingPost
+                }
+                println("Post actualizado con éxito: ${postActualizado.title}")
+            } catch (e: Exception) {
+                println("Error al actualizar: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    // --- DELETE: Borrar dato ---
+    fun deletePost(post: Post) {
+        viewModelScope.launch {
+            try {
+                // 1. Llamamos a la API para borrar
+                repository.deletePost(post.id)
+
+                // 2. Actualizamos la lista local filtrando el post eliminado
+                _postList.value = _postList.value.filter { it.id != post.id }
+                println("Post eliminado con éxito ID: ${post.id}")
+            } catch (e: Exception) {
+                println("Error al eliminar: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    // --- POST: Crear dato ---
+    fun createPost(post: Post) {
+        viewModelScope.launch {
+            try {
+                // 1. Enviamos al servidor
+                val nuevoPost = repository.createPost(post)
+
+                // 2. Agregamos el nuevo post a la lista actual
+                _postList.value = _postList.value + nuevoPost
+
+                println("Post creado con éxito: ${nuevoPost.title}")
+            } catch (e: Exception) {
+                println("Error al crear post: ${e.localizedMessage}")
+            }
+        }
+    }
 }

@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-
     kotlin("kapt")
 }
 
@@ -43,6 +42,7 @@ android {
 
 dependencies {
 
+    // --- LIBRERÍAS PRINCIPALES (Ya incluidas en tu catalogo libs) ---
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -54,6 +54,21 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+
+    // --- DEPENDENCIAS DE ROOM ---
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
+    // --- DEPENDENCIAS PARA CONSUMO REST (Retrofit) ---
+    // NOTA: Borré las líneas duplicadas y mal escritas que causaban el error.
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+
+    // --- DEPENDENCIAS DE TESTING ---
+
+    // Librerías estándar de Android
     implementation(libs.androidx.ui.test.junit4)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -63,41 +78,25 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    //dependencias de room
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
-
-    //dependencias para el consumo REST
-    implementation("androidx.activity-compose:1.9.0")
-    implementation("androidx.compose.material3:1.3.0")
-    implementation("androidx.lifecylce:lifecycle-viewmodel-compose:2.7.0")
-
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
-
-    //dependencias para testing
-
-    //kotest
+    // Kotest (Para tus pruebas con StringSpec)
     testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
 
-    //JUnit 5
+    // JUnit 5 (Motor para Kotest)
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
 
-    //MockK
+    // MockK (Para simular objetos)
     testImplementation("io.mockk:mockk:1.13.10")
 
-    //Compose UI test
+    // Compose UI Test (Para PostScreenTest)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
 
-    //para usar JUnit 5
-    tasks.withType<Test>().configureEach {
-        useJUnitPlatform()
-    }
+    // Soporte para Kotlin Test
     testImplementation(kotlin("test"))
+}
 
+// --- CONFIGURACIÓN DE JUNIT 5 (IMPORTANTE: Debe ir fuera de dependencies) ---
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
