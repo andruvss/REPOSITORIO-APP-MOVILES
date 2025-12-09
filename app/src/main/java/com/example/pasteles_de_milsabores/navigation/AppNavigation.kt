@@ -26,6 +26,10 @@ import com.example.pasteles_de_milsabores.ui.screen.ProfileScreen
 import com.example.pasteles_de_milsabores.ui.screens.PostScreen
 import com.example.pasteles_de_milsabores.viewmodel.PostViewModel
 import com.example.pasteles_de_milsabores.viewmodel.UsuarioViewModel
+
+// 🎉 Importación de la nueva pantalla del Administrador
+import com.example.pasteles_de_milsabores.ui.screen.AdminHomeScreen
+
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -83,7 +87,8 @@ fun AppNavigation() {
                     // IMPORTANTE: Registrar el usuario actual en el ViewModel de Usuario
                     usuarioViewModel.setUsuarioLogueado(state.email)
 
-                    val destino = if (state.esAdmin) "catalogo_admin" else "catalogo_cliente"
+                    // 🛠️ MODIFICACIÓN CLAVE: Redirigir al admin a "admin_home"
+                    val destino = if (state.esAdmin) "admin_home" else "catalogo_cliente"
                     navController.navigate(destino) {
                         popUpTo("login") { inclusive = true }
                     }
@@ -101,6 +106,16 @@ fun AppNavigation() {
             )
         }
 
+        // 🖥️ NUEVA RUTA: Pantalla de Bienvenida del Administrador
+        composable("admin_home") {
+            AdminHomeScreen(
+                // Redirecciona al catálogo de administración ya existente
+                onIrAEditarProductos = { navController.navigate("catalogo_admin") },
+                // Redirecciona a la pantalla de perfil ya existente
+                onIrAEditarPerfil = { navController.navigate("perfil") }
+            )
+        }
+
         composable("catalogo_cliente") {
             CatalogoClienteScreen(
                 viewModel = catalogoViewModel,
@@ -108,7 +123,7 @@ fun AppNavigation() {
             )
         }
 
-        // 1. Ruta del Perfil
+        // 1. Ruta del Perfil (Reutilizada por el Admin)
         composable("perfil") {
             ProfileScreen(
                 navController = navController,

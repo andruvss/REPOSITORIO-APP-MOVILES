@@ -16,5 +16,11 @@ data class Usuario(
     //para el perfilUsuario
     val rut: String = "",
     val direccion: String = "",
-    val fotoPerfilUri: String? = null
+    val fotoPerfilUri: String? = null,
+
+    // ✨ NUEVOS CAMPOS SOLICITADOS ✨
+    val apellido: String = "",
+    val telefono: String = "",
+    val alias: String = "",
+    val descripcion: String = ""
 )
